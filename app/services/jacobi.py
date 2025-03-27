@@ -1,10 +1,10 @@
 import numpy as np
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict, Any
 
 def jacobi_method(A: List[List[float]], b: List[float],
                  initial_guess: Optional[List[float]] = None,
                  max_iterations: int = 100,
-                 tolerance: float = 1e-6) -> Tuple[List[float], int, float, bool]:
+                 tolerance: float = 1e-6) -> Tuple[List[float], int, float, bool, List[Dict[str, Any]]]:
     """
     Implementa el método de Jacobi para resolver sistemas de ecuaciones lineales.
 
@@ -16,7 +16,7 @@ def jacobi_method(A: List[List[float]], b: List[float],
         tolerance: Tolerancia para el criterio de convergencia
 
     Returns:
-        Tuple con (solución, número de iteraciones, error, convergencia)
+        Tuple con (solución, número de iteraciones, error, convergencia, historial de iteraciones)
     """
     A = np.array(A, dtype=float)
     b = np.array(b, dtype=float)
@@ -27,6 +27,15 @@ def jacobi_method(A: List[List[float]], b: List[float],
 
     # Inicializar vector solución
     x = np.zeros(n) if initial_guess is None else np.array(initial_guess, dtype=float)
+
+    # Historial de iteraciones
+    iteration_history = []
+
+    # Guardar la aproximación inicial en el historial
+    iteration_history.append({
+        "values": x.tolist(),
+        "error": 0.0  # No hay error en la primera iteración
+    })
 
     # Iterar hasta convergencia o máximo de iteraciones
     iteration = 0
@@ -50,8 +59,14 @@ def jacobi_method(A: List[List[float]], b: List[float],
         x = x_new.copy()
         iteration += 1
 
+        # Guardar esta iteración en el historial
+        iteration_history.append({
+            "values": x.tolist(),
+            "error": float(error)
+        })
+
         if error <= tolerance:
             converged = True
             break
 
-    return x.tolist(), iteration, float(error), converged
+    return x.tolist(), iteration, float(error), converged, iteration_history

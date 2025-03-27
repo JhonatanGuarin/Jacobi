@@ -8,6 +8,10 @@ class JacobiRequest(BaseModel):
     max_iterations: int = Field(100, description="Número máximo de iteraciones", ge=1)
     tolerance: float = Field(1e-6, description="Tolerancia para el criterio de convergencia", gt=0)
 
+class IterationData(BaseModel):
+    values: List[float] = Field(..., description="Valores de las variables en esta iteración")
+    error: float = Field(..., description="Error en esta iteración")
+
 class JacobiResponse(BaseModel):
     solution: List[float] = Field(..., description="Vector solución del sistema")
     iterations: int = Field(..., description="Número de iteraciones realizadas")
@@ -15,3 +19,4 @@ class JacobiResponse(BaseModel):
     converged: bool = Field(..., description="Indica si el método convergió")
     warnings: Optional[List[str]] = Field(None, description="Advertencias sobre la convergencia")
     convergence_details: Optional[Dict[str, Any]] = Field(None, description="Detalles sobre la convergencia")
+    iteration_history: Optional[List[IterationData]] = Field(None, description="Historial de iteraciones")

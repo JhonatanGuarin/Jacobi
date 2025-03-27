@@ -44,7 +44,7 @@ async def solve(request: JacobiRequest):
             initial_guess = [0.0] * len(request.b)
 
         # Resolver usando el método de Jacobi
-        solution, iterations, error, converged = jacobi_method(
+        solution, iterations, error, converged, iteration_history = jacobi_method(
             A=request.A,
             b=request.b,
             initial_guess=initial_guess,
@@ -57,7 +57,8 @@ async def solve(request: JacobiRequest):
             solution=solution,
             iterations=iterations,
             error=error,
-            converged=converged
+            converged=converged,
+            iteration_history=iteration_history
         )
 
         # Si hay advertencias pero el método podría converger, incluirlas en la respuesta
